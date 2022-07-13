@@ -38,7 +38,7 @@ jobs:
           # report image 
           CF_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/report-image-github-action:0.0.2
           # integration with
-          CF_ENRICHERS: "jira, git"
+          CF_ENRICHERS: "jira"
           # use githug token
           CF_GITHUB_TOKEN: ${{ secrets.CF_GITHUB_TOKEN }}    
           # use jira integration - jira is the name of the integration created in codefresh argo platform.
