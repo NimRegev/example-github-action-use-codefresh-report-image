@@ -29,20 +29,38 @@ jobs:
           echo "On the next step, the report image would use the integration to pull information on the reported image, and using the specified enrichers."
           CF_JIRA_MESSAGE="Example for inserting branch name: $(echo ${GITHUB_REF##*/}) like CR-11027-fix-report "
           echo "CF_JIRA_MESSAGE=$CF_JIRA_MESSAGE" >> $GITHUB_ENV
-      - name: report image by action
-        with:
-          # Specify cluster app-proxy
-          CF_HOST: "${{ secrets.CF_RUNTIME_HOST }}"
-          CF_API_KEY: "${{ secrets.CF_API_KEY }}"
-          # use image registry integration - the name of the integration used for pulling information on the image.
-          CF_CONTAINER_REGISTRY_INTEGRATION: "docker"
+      
 
-          # report image generated in previous step
-          CF_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/your-generated-image:0.0.2
-          # use github token
-          CF_GITHUB_TOKEN: ${{ secrets.CF_GITHUB_TOKEN }}
-          # use jira integration - jira is the name of the integration created in codefresh argo platform.
-          CF_JIRA_INTEGRATION: "jira"
-          CF_JIRA_MESSAGE: "${{ env.CF_JIRA_MESSAGE }}"
-          CF_JIRA_PROJECT_PREFIX: "CR"
+      - name: report image
+        with:
+          # Runtime to use for the enrichment.
+          CF_RUNTIME_NAME: 'codefresh-hosted'
+
+          # API key for authentication to Codefresh. !! Committing a plain text token is a security risk. We highly recommend using encrypted secrets. !!
+          # Documentation - https://docs.github.com/en/actions/security-guides/encrypted-secrets
+          CF_API_KEY: ${{ secrets.API_KEY }}
+
+          # Image reported and enriched in Codefresh. Pass the [account-name]/[image-name]:[tag] built in your CI.
+          CF_IMAGE: '[full image path here, including tag]'
+
+          # Container registry integration where the image is stored.
+          CF_CONTAINER_REGISTRY_INTEGRATION: 'default-dockerhub'
+
+          # Git branch with the commit  Pull Request data to add to the image. Pass the branch from the event payload used to trigger your action.
+          CF_GIT_BRANCH: '[name-of-your-git-branch]'
+
+          # GitHub authentication token. !! Committing a plain text token is a security risk. We highly recommend using encrypted secrets. !!
+          # Documentation - https://docs.github.com/en/actions/security-guides/encrypted-secrets
+          CF_GITHUB_TOKEN: '[github-personal-access-token]'
+
+          # Issue tracking integration to use to enrich the image.
+          CF_JIRA_INTEGRATION: 'default-jira'
+
+          # Jira project prefix  identifying the ticket number to use.
+          CF_JIRA_PROJECT_PREFIX: '[jira-project-prefix]'
+
+          # Search for issue IDs matching this string to associate with your image.
+          CF_JIRA_MESSAGE: '[issue-id]'
+
+
         uses: codefresh-io/codefresh-report-image@latest
