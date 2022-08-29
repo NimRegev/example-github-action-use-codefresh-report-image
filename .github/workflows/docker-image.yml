@@ -20,7 +20,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build & push the Docker image
         env:
-          CF_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/your-generated-image:0.0.2
+          CF_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/quick-start:0.0.2
         run: |
           docker build . --file Dockerfile --tag $CF_IMAGE && docker push $CF_IMAGE
           echo "Image should be accessible to your local machine (after docker login) by:"
@@ -41,17 +41,17 @@ jobs:
           CF_API_KEY: ${{ secrets.API_KEY }}
 
           # Image reported and enriched in Codefresh. Pass the [account-name]/[image-name]:[tag] built in your CI.
-          CF_IMAGE: '[full image path here, including tag]'
+          CF_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/quick-start:0.0.2
 
           # Container registry integration where the image is stored.
           CF_CONTAINER_REGISTRY_INTEGRATION: 'default-dockerhub'
 
           # Git branch with the commit  Pull Request data to add to the image. Pass the branch from the event payload used to trigger your action.
-          CF_GIT_BRANCH: '[name-of-your-git-branch]'
+#           CF_GIT_BRANCH: '[name-of-your-git-branch]'
 
           # GitHub authentication token. !! Committing a plain text token is a security risk. We highly recommend using encrypted secrets. !!
           # Documentation - https://docs.github.com/en/actions/security-guides/encrypted-secrets
-          CF_GITHUB_TOKEN: '[github-personal-access-token]'
+          CF_GITHUB_TOKEN:  ${{ secrets.CF_GITHUB_TOKEN }}
 
           # Issue tracking integration to use to enrich the image.
           CF_JIRA_INTEGRATION: 'default-jira'
